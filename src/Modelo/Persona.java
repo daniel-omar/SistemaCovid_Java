@@ -24,8 +24,8 @@ public class Persona {
     private String Telefono;
     private String Correo;
     
-    private int IdUsuarioRegistro;
-    private int IdUsuarioModificacion;
+    private int IdPersonaRegistro;
+    private int IdPersonaModificacion;
     
     private Date FechaRegistro;
     private Date FechaModificacion;
@@ -114,20 +114,20 @@ public class Persona {
         this.Correo = Correo;
     }
 
-    public int getIdUsuarioRegistro() {
-        return IdUsuarioRegistro;
+    public int getIdPersonaRegistro() {
+        return IdPersonaRegistro;
     }
 
-    public void setIdUsuarioRegistro(int IdUsuarioRegistro) {
-        this.IdUsuarioRegistro = IdUsuarioRegistro;
+    public void setIdPersonaRegistro(int IdPersonaRegistro) {
+        this.IdPersonaRegistro = IdPersonaRegistro;
     }
 
-    public int getIdUsuarioModificacion() {
-        return IdUsuarioModificacion;
+    public int getIdPersonaModificacion() {
+        return IdPersonaModificacion;
     }
 
-    public void setIdUsuarioModificacion(int IdUsuarioModificacion) {
-        this.IdUsuarioModificacion = IdUsuarioModificacion;
+    public void setIdPersonaModificacion(int IdPersonaModificacion) {
+        this.IdPersonaModificacion = IdPersonaModificacion;
     }
 
     public Date getFechaRegistro() {

@@ -8,12 +8,17 @@ package Vista;
 import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 import Data.PersonaDAO;
+import Data.TipoPersonaDAO;
 import Modelo.Persona;
+import Modelo.TipoPersona;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import Util.Render;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,21 +26,28 @@ import Util.Render;
  */
 public class FPersona extends javax.swing.JFrame {
 
+    TipoPersonaDAO tipoPersonaDAO = new TipoPersonaDAO();
     PersonaDAO personaDAO = new PersonaDAO();
+
     DefaultTableModel dtblPersona = null;
     JButton btnAModificar = new JButton("Modificar");
     JButton btnADesactivar = new JButton("Desactivar");
     JButton btnAActivar = new JButton("Activar");
     JButton btnASeleccionar = new JButton("Seleccionar");
     SimpleDateFormat dtf = new SimpleDateFormat("yyyy/MM/dd");
+    Persona oPersona = new Persona();
+
+    DefaultComboBoxModel dcboTipoPersona = null;
 
     public FPersona() {
         initComponents();
         EstablecerFecha();
         habilitarBotones(true);
-        Persona persona=new Persona();
-        persona.setEsActivo(true);
-        buscarPersona(persona);
+
+        oPersona.setEsActivo(true);
+        buscarPersona(oPersona);
+
+        listarTipoPersona();
 
         this.setLocationRelativeTo(null);
     }
@@ -64,7 +76,7 @@ public class FPersona extends javax.swing.JFrame {
 
     public void inicializarPersona() {
         btnAModificar.setName("btnModificar");
-        btnADesactivar.setName("btnEliminar");
+        btnADesactivar.setName("btnDesactivar");
         btnAActivar.setName("btnActivar");
 
         tblPersona.setDefaultRenderer(Object.class, new Render());
@@ -107,6 +119,20 @@ public class FPersona extends javax.swing.JFrame {
         }
     }
 
+    public void listarTipoPersona() {
+        dcboTipoPersona = new DefaultComboBoxModel();
+        cboTipoPersona.setModel(dcboTipoPersona);
+
+        List<TipoPersona> lstCategoria = tipoPersonaDAO.listarTipoPersona();
+
+        for (int i = 0; i < lstCategoria.size(); i++) {
+            dcboTipoPersona.addElement(new TipoPersona(
+                    lstCategoria.get(i).getIdTipoPersona(),
+                    lstCategoria.get(i).getNombre()
+            ));
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -122,7 +148,7 @@ public class FPersona extends javax.swing.JFrame {
         txtNombre = new javax.swing.JTextField();
         cboTipoPersona = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
-        txtApellidos = new javax.swing.JTextField();
+        txtApellidoPaterno = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtNumeroDocumento = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
@@ -135,6 +161,8 @@ public class FPersona extends javax.swing.JFrame {
         btnRegistrar = new javax.swing.JButton();
         btnModificar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        txtApellidoMaterno = new javax.swing.JTextField();
         spPersona = new javax.swing.JScrollPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPersona = new javax.swing.JTable();
@@ -163,10 +191,8 @@ public class FPersona extends javax.swing.JFrame {
             }
         });
 
-        cboTipoPersona.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccionar", "Administrativo", "Area Salud", "Paciente" }));
-
         jLabel4.setFont(new java.awt.Font("Malgun Gothic Semilight", 1, 12)); // NOI18N
-        jLabel4.setText("Apellidos:");
+        jLabel4.setText("Apellido Paterno:");
 
         jLabel5.setFont(new java.awt.Font("Malgun Gothic Semilight", 1, 12)); // NOI18N
         jLabel5.setText("Número de Documento:");
@@ -196,10 +222,28 @@ public class FPersona extends javax.swing.JFrame {
         jLabel11.setText("Tipo de persona:");
 
         btnRegistrar.setText("Registrar");
+        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistrarActionPerformed(evt);
+            }
+        });
 
         btnModificar.setText("Modificar");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
 
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Malgun Gothic Semilight", 1, 12)); // NOI18N
+        jLabel2.setText("Apellid Materno");
 
         javax.swing.GroupLayout pDatosLayout = new javax.swing.GroupLayout(pDatos);
         pDatos.setLayout(pDatosLayout);
@@ -218,10 +262,6 @@ public class FPersona extends javax.swing.JFrame {
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(pDatosLayout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDatosLayout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -237,18 +277,28 @@ public class FPersona extends javax.swing.JFrame {
                             .addGroup(pDatosLayout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                                .addComponent(txtNumeroDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(txtNumeroDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDatosLayout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(pDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtApellidoMaterno)
+                                    .addComponent(txtApellidoPaterno, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)))))
                     .addGroup(pDatosLayout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(pDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pDatosLayout.createSequentialGroup()
+                                .addGap(40, 40, 40)
+                                .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(pDatosLayout.createSequentialGroup()
+                                .addGap(113, 113, 113)
+                                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(pDatosLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel2)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(pDatosLayout.createSequentialGroup()
-                .addGap(113, 113, 113)
-                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pDatosLayout.setVerticalGroup(
             pDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,7 +314,11 @@ public class FPersona extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtApellidoPaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtApellidoMaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNumeroDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -281,7 +335,7 @@ public class FPersona extends javax.swing.JFrame {
                 .addGroup(pDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(pDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnModificar, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
                     .addComponent(btnRegistrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -290,6 +344,11 @@ public class FPersona extends javax.swing.JFrame {
                 .addGap(47, 47, 47))
         );
 
+        tblPersona.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblPersonaMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblPersona);
 
         spPersona.setViewportView(jScrollPane1);
@@ -356,7 +415,7 @@ public class FPersona extends javax.swing.JFrame {
                         .addComponent(spPersona, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(pDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 2, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(9, 9, 9))
         );
 
@@ -376,20 +435,246 @@ public class FPersona extends javax.swing.JFrame {
     }//GEN-LAST:event_txtDireccionActionPerformed
 
     private void btnBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBusquedaActionPerformed
-        Persona oPersona = new Persona();
-        oPersona.setNumeroDocumento("");
-        buscarPersona(oPersona);
+
     }//GEN-LAST:event_btnBusquedaActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        Persona oPersona = new Persona();
+        oPersona = new Persona();
         oPersona.setNumeroDocumento("");
         oPersona.setEsActivo(true);
         buscarPersona(oPersona);
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+        try {
+            oPersona = new Persona();
+            String nombre, apellidoPaterno, apellidoMaterno, numeroDocumento, celular, correo, direccion, validacion;
+
+            validacion = VerificarCampos();
+
+            if (!validacion.equals("")) {
+                JOptionPane.showMessageDialog(null, "Verificar los datos en el campo " + validacion);
+                return;
+            }
+            nombre = txtNombre.getText();
+            apellidoPaterno = txtApellidoPaterno.getText();
+            apellidoMaterno = txtApellidoMaterno.getText();
+            numeroDocumento = txtNumeroDocumento.getText();
+            celular = txtCelular.getText();
+            correo = txtCorreo.getText();
+            direccion = txtDireccion.getText();
+            TipoPersona oTipoPersona = (TipoPersona) cboTipoPersona.getSelectedItem();
+
+            oPersona.setIdTipoPersona(oTipoPersona.getIdTipoPersona());
+            oPersona.setNombres(nombre);
+            oPersona.setApellidoPaterno(apellidoPaterno);
+            oPersona.setApellidoMaterno(apellidoMaterno);
+            oPersona.setNumeroDocumento(numeroDocumento);
+            oPersona.setTelefono(celular);
+            oPersona.setCorreo(correo);
+            oPersona.setDireccion(direccion);
+            oPersona.setIdPersonaRegistro(1);
+
+            boolean existe = personaDAO.existePersona(oPersona);
+            if (existe) {
+                JOptionPane.showMessageDialog(null, "Persona ya exite", "Info", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            boolean resp = personaDAO.registrarPersona(oPersona);
+
+            if (resp) {
+                limpiar();
+                oPersona = new Persona();
+                oPersona.setEsActivo(true);
+                buscarPersona(oPersona);
+
+                JOptionPane.showMessageDialog(null, "Persona registrada", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnRegistrarActionPerformed
+
+    private void tblPersonaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPersonaMouseClicked
+        int column = tblPersona.getColumnModel().getColumnIndexAtX(evt.getX());
+        int row = evt.getY() / tblPersona.getRowHeight();
+
+        if (row < tblPersona.getRowCount() && row >= 0 && column < tblPersona.getColumnCount() && column >= 0) {
+            Object value = tblPersona.getValueAt(row, column);
+            if (value instanceof JButton) {
+                ((JButton) value).doClick();
+                JButton boton = (JButton) value;
+
+                if (boton.getName().equals("btnModificar")) {
+                    habilitarBotones(false);
+                    oPersona = new Persona();
+                    oPersona.setIdPersona(Integer.parseInt(tblPersona.getValueAt(row, 0).toString()));
+                    editarPersona();
+                }
+                if (boton.getName().equals("btnDesactivar")) {
+                    Persona persona = new Persona();
+                    persona.setEsActivo(false);
+                    persona.setIdPersona(Integer.parseInt(tblPersona.getValueAt(row, 0).toString()));
+                    int o = JOptionPane.showConfirmDialog(null, "Desea desactivar este registro", "Confirmar", JOptionPane.OK_CANCEL_OPTION);
+                    if (o == JOptionPane.YES_OPTION) {
+                        eliminarPersona(persona);
+
+                        persona = new Persona();
+                        persona.setEsActivo(true);
+                        buscarPersona(persona);
+                    }
+                }
+                if (boton.getName().equals("btnActivar")) {
+                    Persona persona = new Persona();
+                    persona.setEsActivo(true);
+                    persona.setIdPersona(Integer.parseInt(tblPersona.getValueAt(row, 0).toString()));
+                    int o = JOptionPane.showConfirmDialog(null, "Desea activar este registro", "Confirmar", JOptionPane.OK_CANCEL_OPTION);
+                    if (o == JOptionPane.YES_OPTION) {
+                        eliminarPersona(persona);
+
+                        persona = new Persona();
+                        persona.setEsActivo(true);
+                        buscarPersona(persona);
+                    }
+                }
+            }
+            if (value instanceof JCheckBox) {
+                //((JCheckBox)value).doClick();
+                JCheckBox ch = (JCheckBox) value;
+                if (ch.isSelected() == true) {
+                    ch.setSelected(false);
+                }
+                if (ch.isSelected() == false) {
+                    ch.setSelected(true);
+                }
+
+            }
+        }
+    }//GEN-LAST:event_tblPersonaMouseClicked
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        limpiar();
+        habilitarBotones(true);
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        try {
+
+            String nombre, apellidoPaterno, apellidoMaterno, numeroDocumento, celular, correo, direccion, validacion;
+            int idPersona = oPersona.getIdPersona();
+
+            oPersona = new Persona();
+            validacion = VerificarCampos();
+
+            if (!validacion.equals("")) {
+                JOptionPane.showMessageDialog(null, "Verificar los datos en el campo " + validacion);
+                return;
+            }
+
+            nombre = txtNombre.getText();
+            apellidoPaterno = txtApellidoPaterno.getText();
+            apellidoMaterno = txtApellidoMaterno.getText();
+            numeroDocumento = txtNumeroDocumento.getText();
+            celular = txtCelular.getText();
+            correo = txtCorreo.getText();
+            direccion = txtDireccion.getText();
+            TipoPersona oTipoPersona = (TipoPersona) cboTipoPersona.getSelectedItem();
+
+            oPersona.setIdPersona(idPersona);
+            oPersona.setIdTipoPersona(oTipoPersona.getIdTipoPersona());
+            oPersona.setNombres(nombre);
+            oPersona.setApellidoPaterno(apellidoPaterno);
+            oPersona.setApellidoMaterno(apellidoMaterno);
+            oPersona.setNumeroDocumento(numeroDocumento);
+            oPersona.setTelefono(celular);
+            oPersona.setCorreo(correo);
+            oPersona.setDireccion(direccion);
+            oPersona.setIdPersonaRegistro(1);
+
+//            boolean existe = personaDAO.existePersona(oPersona);
+//            if (existe) {
+//                JOptionPane.showMessageDialog(null, "Persona ya exite", "Info", JOptionPane.INFORMATION_MESSAGE);
+//                return;
+//            }
+            boolean resp = personaDAO.modificarPersona(oPersona);
+
+            if (resp) {
+                limpiar();
+                oPersona = new Persona();
+                oPersona.setEsActivo(true);
+                buscarPersona(oPersona);
+
+                JOptionPane.showMessageDialog(null, "Persona modificada", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnModificarActionPerformed
     private void habilitarBotones(boolean activo) {
         btnRegistrar.setEnabled(activo);
+
+        txtNumeroDocumento.setEditable(activo);
         btnModificar.setEnabled(!activo);
+    }
+
+    private String VerificarCampos() {
+        //Verificar información
+        if (txtNombre.getText().length() <= 0) {
+            return "Nombre";
+        }
+        if (txtApellidoPaterno.getText().length() <= 0) {
+            return "Apellido Paterno";
+        }
+        if (txtApellidoMaterno.getText().length() <= 0) {
+            return "Apellido Materno";
+        }
+        if (txtNumeroDocumento.getText().length() <= 0) {
+            return "Numero de Documento";
+        }
+        return "";
+    }
+
+    public void limpiar() {
+        txtNombre.setText("");
+        txtApellidoPaterno.setText("");
+        txtApellidoMaterno.setText("");
+        txtNumeroDocumento.setText("");
+        txtCelular.setText("");
+        txtCorreo.setText("");
+        txtDireccion.setText("");
+        cboTipoPersona.setSelectedIndex(0);
+        txtNombre.isFocusable();
+    }
+
+    private void editarPersona() {
+        limpiar();
+
+        oPersona = personaDAO.obtenerPersona(oPersona.getIdPersona());
+
+        TipoPersona tipoPersona = new TipoPersona();
+        tipoPersona.setIdTipoPersona(oPersona.getIdTipoPersona());
+        cboTipoPersona.setSelectedItem(tipoPersona);
+        txtNombre.setText(oPersona.getNombres());
+        txtApellidoPaterno.setText(oPersona.getApellidoPaterno());
+        txtApellidoMaterno.setText(oPersona.getApellidoMaterno());
+        txtNumeroDocumento.setText(oPersona.getNumeroDocumento());
+        txtCelular.setText(oPersona.getTelefono());
+        txtCorreo.setText(oPersona.getCorreo());
+        txtDireccion.setText(oPersona.getDireccion());
+
+    }
+
+    private void eliminarPersona(Persona persona) {
+        boolean resp = personaDAO.eliminarPersona(persona);
+        if (resp) {
+            JOptionPane.showMessageDialog(null, (persona.getEsActivo() ? "Activado correctamente" : "Desactivado correctamente"), "Exitoso", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, (persona.getEsActivo() ? "Error al activar" : "Error al desactivar"), "Sin exito", JOptionPane.INFORMATION_MESSAGE);
+        }
+        habilitarBotones(true);
+        limpiar();
     }
 
     /**
@@ -438,6 +723,7 @@ public class FPersona extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -450,7 +736,8 @@ public class FPersona extends javax.swing.JFrame {
     private javax.swing.JPanel pDatos;
     private javax.swing.JScrollPane spPersona;
     private javax.swing.JTable tblPersona;
-    private javax.swing.JTextField txtApellidos;
+    private javax.swing.JTextField txtApellidoMaterno;
+    private javax.swing.JTextField txtApellidoPaterno;
     private javax.swing.JTextField txtCelular;
     private javax.swing.JTextField txtCorreo;
     private javax.swing.JTextField txtDireccion;

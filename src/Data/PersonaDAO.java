@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import Modelo.Persona;
+import com.mysql.jdbc.Statement;
 
 /**
  *
@@ -58,7 +59,7 @@ public class PersonaDAO {
         return lstPersona;
     }
 
-    public Persona obtenerCliente(int idPersona) {
+    public Persona obtenerPersona(int idPersona) {
         Persona persona = null;
         conexion = new Conexion();
         try {
@@ -69,7 +70,7 @@ public class PersonaDAO {
             ResultSet rs = pt.executeQuery();
             if (rs.next()) {
                 persona = new Persona();
-                persona.setIdPersona(rs.getInt("IdCliente"));
+                persona.setIdPersona(rs.getInt("IdPersona"));
                 persona.setIdTipoPersona(rs.getInt("IdTipoPersona"));
                 persona.setNumeroDocumento(rs.getString("NumeroDocumento"));
                 persona.setNombres(rs.getString("Nombres"));
@@ -87,5 +88,101 @@ public class PersonaDAO {
             System.out.println(ex.getMessage());
         }
         return persona;
+    }
+
+    public boolean existePersona(Persona persona) {
+        boolean result = false;
+        conexion = new Conexion();
+        try {
+
+            cn = conexion.conectar();
+            PreparedStatement pt = cn.prepareStatement("select IF(EXISTS(SELECT 1 FROM `persona` WHERE numeroDocumento=?),1,0) as result");
+            pt.setString(1, persona.getNumeroDocumento());
+            ResultSet rs = pt.executeQuery();
+            while (rs.next()) {
+                result = rs.getBoolean("result");
+            }
+            cn.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return result;
+    }
+
+    public boolean registrarPersona(Persona persona) {
+        boolean rsp = false;
+        conexion = new Conexion();
+        try {
+            cn = conexion.conectar();
+
+            CallableStatement sp = cn.prepareCall("call sp_registrarPersona(?,?,?,?,?,?,?,?,?)");
+            sp.setInt(1, persona.getIdTipoPersona());
+            sp.setString(2, persona.getNombres());
+            sp.setString(3, persona.getApellidoPaterno());
+            sp.setString(4, persona.getApellidoMaterno());
+            sp.setString(5, persona.getNumeroDocumento());
+            sp.setString(6, persona.getCorreo());
+            sp.setString(7, persona.getTelefono());
+            sp.setString(8, persona.getDireccion());
+            sp.setInt(9, persona.getIdPersonaRegistro());
+            sp.executeQuery();
+
+            cn.close();
+            rsp = true;
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return rsp;
+    }
+
+    public boolean modificarPersona(Persona persona) {
+        boolean rsp = false;
+        conexion = new Conexion();
+        try {
+            cn = conexion.conectar();
+
+            CallableStatement sp = cn.prepareCall("call sp_modificarPersona(?,?,?,?,?,?,?,?,?,?)");
+            sp.setInt(1, persona.getIdPersona());
+            sp.setInt(2, persona.getIdTipoPersona());
+            sp.setString(3, persona.getNombres());
+            sp.setString(4, persona.getApellidoPaterno());
+            sp.setString(5, persona.getApellidoMaterno());
+            sp.setString(6, persona.getNumeroDocumento());
+            sp.setString(7, persona.getCorreo());
+            sp.setString(8, persona.getTelefono());
+            sp.setString(9, persona.getDireccion());
+            sp.setInt(10, persona.getIdPersonaModificacion());
+            sp.executeQuery();
+
+            //ResultSet rs = sp.executeQuery();
+            cn.close();
+            rsp = true;
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return rsp;
+    }
+    public boolean eliminarPersona(Persona persona) {
+        boolean rsp = false;
+
+        try {
+            cn = conexion.conectar();
+
+            CallableStatement sp = cn.prepareCall("call sp_eliminarPersona(?,?,?)");
+            sp.setInt(1, persona.getIdPersona());
+            sp.setBoolean(2, persona.getEsActivo());
+            sp.setInt(3, persona.getIdPersonaModificacion());
+
+            sp.executeQuery();
+
+            cn.close();
+            rsp = true;
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return rsp;
     }
 }

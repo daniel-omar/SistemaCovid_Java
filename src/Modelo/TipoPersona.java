@@ -10,11 +10,17 @@ package Modelo;
  * @author omar_
  */
 public class TipoPersona {
+
     private int IdTipoPersona;
-    private int Descripcion;
+    private String Nombre;
     private boolean EsActivo;
 
     public TipoPersona() {
+    }
+
+    public TipoPersona(int idTipoPersona, String nombre) {
+        this.IdTipoPersona = idTipoPersona;
+        this.Nombre = nombre;
     }
 
     public int getIdTipoPersona() {
@@ -25,12 +31,12 @@ public class TipoPersona {
         this.IdTipoPersona = IdTipoPersona;
     }
 
-    public int getDescripcion() {
-        return Descripcion;
+    public String getNombre() {
+        return Nombre;
     }
 
-    public void setDescripcion(int Descripcion) {
-        this.Descripcion = Descripcion;
+    public void setNombre(String Nombre) {
+        this.Nombre = Nombre;
     }
 
     public boolean isEsActivo() {
@@ -40,5 +46,9 @@ public class TipoPersona {
     public void setEsActivo(boolean EsActivo) {
         this.EsActivo = EsActivo;
     }
-    
+
+    @Override
+    public String toString() {
+        return this.Nombre;
+    }
 }
