@@ -185,4 +185,34 @@ public class PersonaDAO {
         }
         return rsp;
     }
+    public Persona iniciarSesion(String numeroDocumento) {
+        Persona persona = null;
+        conexion = new Conexion();
+        try {
+
+            cn = conexion.conectar();
+            PreparedStatement pt = cn.prepareStatement("select * from Persona where NumeroDocumento=? limit 1");
+            pt.setString(1, numeroDocumento);
+            ResultSet rs = pt.executeQuery();
+            if (rs.next()) {
+                persona = new Persona();
+                persona.setIdPersona(rs.getInt("IdPersona"));
+                persona.setIdTipoPersona(rs.getInt("IdTipoPersona"));
+                persona.setNumeroDocumento(rs.getString("NumeroDocumento"));
+                persona.setNombres(rs.getString("Nombres"));
+                persona.setApellidoPaterno(rs.getString("ApellidoPaterno"));
+                persona.setApellidoMaterno(rs.getString("ApellidoMaterno"));
+                persona.setDireccion(rs.getString("Direccion"));
+                persona.setTelefono(rs.getString("Telefono"));
+                persona.setCorreo(rs.getString("Correo"));
+                persona.setEsActivo(rs.getBoolean("EsActivo"));
+                persona.setFechaRegistro(rs.getDate("FechaRegistro"));
+                persona.setFechaModificacion(rs.getDate("FechaModificacion"));
+            }
+            cn.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return persona;
+    }
 }
