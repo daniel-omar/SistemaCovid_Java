@@ -29,7 +29,17 @@ public class FIncorporacion extends javax.swing.JInternalFrame {
         initComponents();
 
         EstablecerFecha();
-        listarIncorporacion();
+        if (Principal.persona.getoTipoPersona().getNombre().equalsIgnoreCase("empleado")) {
+            listarIncorporacionPorEmpleado();
+            lblIncorporacion.setText("Incorporaciones:");
+            lblInfoIncorporacion.setText("<html>Se puede visualizar las solicitudes de incorporaciones realizadas</html>");
+        } else {
+            listarIncorporacionPorEstado();
+            lblIncorporacion.setText("Incorporaciones pendientes:");
+            lblInfoIncorporacion.setText("<html>Se puede visualizar todos los empleados que han registrado su ficha de sintomatologia </br>y estan con una incorporación pendiente</html>");
+            btnRegistrarIncorporacion.setVisible(false);
+        }
+
     }
 
     private void EstablecerFecha() {
@@ -75,10 +85,29 @@ public class FIncorporacion extends javax.swing.JInternalFrame {
         tblIncorporacion.setRowHeight(30);
     }
 
-    public void listarIncorporacion() {
+    public void listarIncorporacionPorEstado() {
 
         inicializarIncorporacion();
-        List<Incorporacion> lstIncorporacion = incorporacionDAO.ListarIncorporacion(1);
+        List<Incorporacion> lstIncorporacion = incorporacionDAO.ListarIncorporacionPorEstado(1);
+
+        for (int i = 0; i < lstIncorporacion.size(); i++) {
+            dtblIncorporacion.addRow(new Object[]{
+                lstIncorporacion.get(i).getIdIncorporacion(),
+                lstIncorporacion.get(i).getoPersonaRegistro().getNombres() + " "
+                + lstIncorporacion.get(i).getoPersonaRegistro().getApellidoPaterno() + " "
+                + lstIncorporacion.get(i).getoPersonaRegistro().getApellidoMaterno(),
+                lstIncorporacion.get(i).getFechaRegistro(),
+                lstIncorporacion.get(i).getoEstadoIncorporacion().getNombre(),
+                //lstIncorporacion.get(i).getoEstadoIncorporacion().getNombre(),
+                btnAVer
+            });
+        }
+    }
+
+    public void listarIncorporacionPorEmpleado() {
+
+        inicializarIncorporacion();
+        List<Incorporacion> lstIncorporacion = incorporacionDAO.ListarIncorporacionPorEmpleado(Principal.persona.getIdPersona());
 
         for (int i = 0; i < lstIncorporacion.size(); i++) {
             dtblIncorporacion.addRow(new Object[]{
@@ -102,8 +131,9 @@ public class FIncorporacion extends javax.swing.JInternalFrame {
         spIncorporacion = new javax.swing.JScrollPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblIncorporacion = new javax.swing.JTable();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        lblIncorporacion = new javax.swing.JLabel();
+        lblInfoIncorporacion = new javax.swing.JLabel();
+        btnRegistrarIncorporacion = new javax.swing.JButton();
 
         setClosable(true);
 
@@ -121,10 +151,19 @@ public class FIncorporacion extends javax.swing.JInternalFrame {
 
         spIncorporacion.setViewportView(jScrollPane1);
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel2.setText("Incorporaciones pendientes:");
+        lblIncorporacion.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblIncorporacion.setText("Incorporaciones pendientes:");
 
-        jLabel3.setText("<html>Se puede visualizar todos los empleados que han registrado su ficha de sintomatologia </br>y estan con una incorporación pendiente</html>");
+        lblInfoIncorporacion.setText("<html>Se puede visualizar todos los empleados que han registrado su ficha de sintomatologia </br>y estan con una incorporación pendiente</html>");
+
+        btnRegistrarIncorporacion.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnRegistrarIncorporacion.setText("Nueva");
+        btnRegistrarIncorporacion.setToolTipText("");
+        btnRegistrarIncorporacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistrarIncorporacionActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -133,9 +172,13 @@ public class FIncorporacion extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblIncorporacion)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnRegistrarIncorporacion, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14))
                     .addComponent(spIncorporacion, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(lblInfoIncorporacion, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(0, 18, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(155, 155, 155)
@@ -147,10 +190,12 @@ public class FIncorporacion extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(13, 13, 13)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblIncorporacion)
+                    .addComponent(btnRegistrarIncorporacion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblInfoIncorporacion, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(spIncorporacion, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -174,18 +219,27 @@ public class FIncorporacion extends javax.swing.JInternalFrame {
                     Principal.dsPrincipal.add(fMantenedorIncorporacion);
                     Redimensionar.redimensionar(dsPrincipal, fMantenedorIncorporacion);
                     fMantenedorIncorporacion.show();
-                    //this.dispose();
+                    this.dispose();
                 }
             }
         }
     }//GEN-LAST:event_tblIncorporacionMouseClicked
 
+    private void btnRegistrarIncorporacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarIncorporacionActionPerformed
+        FMantenedorIncorporacion fMantenedorIncorporacion = new FMantenedorIncorporacion();
+        Principal.dsPrincipal.add(fMantenedorIncorporacion);
+        Redimensionar.redimensionar(dsPrincipal, fMantenedorIncorporacion);
+        fMantenedorIncorporacion.show();
+        this.dispose();
+    }//GEN-LAST:event_btnRegistrarIncorporacionActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnRegistrarIncorporacion;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblIncorporacion;
+    private javax.swing.JLabel lblInfoIncorporacion;
     private javax.swing.JScrollPane spIncorporacion;
     private javax.swing.JTable tblIncorporacion;
     // End of variables declaration//GEN-END:variables

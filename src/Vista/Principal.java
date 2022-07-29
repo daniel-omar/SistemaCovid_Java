@@ -21,6 +21,8 @@ public class Principal extends javax.swing.JFrame {
     public Principal() {
         initComponents();
 
+        mInfoUsuario.setVisible(false);
+        mSalir.setVisible(false);
         this.setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
     }
 
@@ -28,12 +30,31 @@ public class Principal extends javax.swing.JFrame {
         this.persona = persona;
         initComponents();
 
-        mInfoUsuario.setText(persona.getNombres() + " " + persona.getApellidoPaterno() + " " + persona.getApellidoMaterno());
+        mInfoUsuario.setText(persona.getoTipoPersona().getNombre() + " :: "
+                + persona.getNombres() + " "
+                + persona.getApellidoPaterno() + " "
+                + persona.getApellidoMaterno());
 
         mBar.add(Box.createHorizontalGlue());
         mBar.add(mInfoUsuario);
         mBar.add(mSalir);
+
+        ocultarMenu();
+        permisoTipoPersona(persona.getoTipoPersona().getNombre());
+
         this.setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
+    }
+
+    void permisoTipoPersona(String tipoPersona) {
+        mIncorporacion.setVisible(true);
+        if (!tipoPersona.equalsIgnoreCase("empleado")) {
+            mPersona.setVisible(true);
+        }
+    }
+
+    void ocultarMenu() {
+        mIncorporacion.setVisible(false);
+        mPersona.setVisible(false);
     }
 
     /**
@@ -123,10 +144,12 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void mIncorporacionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mIncorporacionMouseClicked
+
         FIncorporacion fIncorporacion = new FIncorporacion();
         dsPrincipal.add(fIncorporacion);
         Redimensionar.redimensionar(dsPrincipal, fIncorporacion);
         fIncorporacion.show();
+
     }//GEN-LAST:event_mIncorporacionMouseClicked
 
     private void mPersonaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mPersonaMouseClicked

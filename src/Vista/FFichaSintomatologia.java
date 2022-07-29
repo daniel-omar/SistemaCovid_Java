@@ -7,6 +7,9 @@ package Vista;
 
 import Modelo.FichaSintomatologica;
 import Data.FichaSintomatologicaDAO;
+import Data.IncorporacionDAO;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -16,6 +19,7 @@ public class FFichaSintomatologia extends javax.swing.JInternalFrame {
 
     FichaSintomatologica fichaSintomatologica = new FichaSintomatologica();
     FichaSintomatologicaDAO fichaSintomatologicaDAO = new FichaSintomatologicaDAO();
+    IncorporacionDAO incorporacionDAO = new IncorporacionDAO();
 
     public FFichaSintomatologia() {
         initComponents();
@@ -34,15 +38,27 @@ public class FFichaSintomatologia extends javax.swing.JInternalFrame {
     private void obtenerFichaSintomatologica(int idFicha) {
         fichaSintomatologica = fichaSintomatologicaDAO.obtenerIncorporacion(idFicha);
 
-        if (fichaSintomatologica.getSensacionAlzaTermica()) rbPregunta1Si.setSelected(true);
-        else rbPregunta1No.setSelected(true);
-        if (fichaSintomatologica.getTosEstornudo()) rbPregunta2Si.setSelected(true);
-        else rbPregunta2No.setSelected(true);
-        if (fichaSintomatologica.getExpectoracionFlema()) rbPregunta3Si.setSelected(true);
-        else rbPregunta3No.setSelected(true);
-        if (fichaSintomatologica.getContactoPositivo()) rbPregunta4Si.setSelected(true);
-        else rbPregunta4No.setSelected(true);
-        
+        if (fichaSintomatologica.getSensacionAlzaTermica()) {
+            rbPregunta1Si.setSelected(true);
+        } else {
+            rbPregunta1No.setSelected(true);
+        }
+        if (fichaSintomatologica.getTosEstornudo()) {
+            rbPregunta2Si.setSelected(true);
+        } else {
+            rbPregunta2No.setSelected(true);
+        }
+        if (fichaSintomatologica.getExpectoracionFlema()) {
+            rbPregunta3Si.setSelected(true);
+        } else {
+            rbPregunta3No.setSelected(true);
+        }
+        if (fichaSintomatologica.getContactoPositivo()) {
+            rbPregunta4Si.setSelected(true);
+        } else {
+            rbPregunta4No.setSelected(true);
+        }
+
     }
 
     /**
@@ -95,22 +111,22 @@ public class FFichaSintomatologia extends javax.swing.JInternalFrame {
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 102, 102));
-        jLabel4.setText("<html>Sensación de alza térmica o fiebre mayor a 37.5° </html>");
+        jLabel4.setText("<html>1-Sensación de alza térmica o fiebre mayor a 37.5° </html>");
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 102, 102));
-        jLabel6.setText("<html>Tos, estornudo o dificultad respiratorio</html>");
+        jLabel6.setText("<html>2-Tos, estornudo o dificultad respiratorio</html>");
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(0, 102, 102));
-        jLabel7.setText("<html>Expectoración o flema amarilla</html>");
+        jLabel7.setText("<html>3-Expectoración o flema amarilla</html>");
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel8.setText("Otros datos importantes");
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 102, 102));
-        jLabel9.setText("<html>Contacto con persona(s) con un caso confirmado de COVID-19</html>");
+        jLabel9.setText("<html>4-Contacto con persona(s) con un caso confirmado de COVID-19</html>");
 
         bgPregunta1.add(rbPregunta1Si);
         rbPregunta1Si.setText("Sí");
@@ -155,6 +171,23 @@ public class FFichaSintomatologia extends javax.swing.JInternalFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addContainerGap())
+                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbFichaSintomatologica, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(84, 84, 84)
@@ -178,27 +211,10 @@ public class FFichaSintomatologia extends javax.swing.JInternalFrame {
                         .addGap(39, 39, 39)
                         .addComponent(rbPregunta4No)))
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addContainerGap())
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cbFichaSintomatologica, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnRegistrar)
-                .addGap(109, 109, 109))
+                .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(101, 101, 101))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -236,10 +252,10 @@ public class FFichaSintomatologia extends javax.swing.JInternalFrame {
                     .addComponent(rbPregunta4Si)
                     .addComponent(rbPregunta4No))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cbFichaSintomatologica, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbFichaSintomatologica, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnRegistrar)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addComponent(btnRegistrar, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
+                .addGap(6, 6, 6))
         );
 
         pack();
@@ -250,7 +266,47 @@ public class FFichaSintomatologia extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cbFichaSintomatologicaActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        // TODO add your handling code here:
+        try {
+            if (!rbPregunta1No.isSelected() && !rbPregunta1Si.isSelected()) {
+                JOptionPane.showMessageDialog(null, "Seleccionar respuesta Pregunta 1", "Info", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            if (!rbPregunta2No.isSelected() && !rbPregunta2Si.isSelected()) {
+                JOptionPane.showMessageDialog(null, "Seleccionar respuesta Pregunta 2", "Info", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            if (!rbPregunta3No.isSelected() && !rbPregunta3Si.isSelected()) {
+                JOptionPane.showMessageDialog(null, "Seleccionar respuesta Pregunta 3", "Info", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            if (!rbPregunta4No.isSelected() && !rbPregunta4Si.isSelected()) {
+                JOptionPane.showMessageDialog(null, "Seleccionar respuesta Pregunta 4", "Info", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            if (!cbFichaSintomatologica.isSelected()) {
+                JOptionPane.showMessageDialog(null, "Debe seleccionar si está de acuerdo con las condiciones", "Info", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            boolean pregunta1 = rbPregunta1Si.isSelected() ? true : false;
+            boolean pregunta2 = rbPregunta2Si.isSelected() ? true : false;
+            boolean pregunta3 = rbPregunta3Si.isSelected() ? true : false;
+            boolean pregunta4 = rbPregunta4Si.isSelected() ? true : false;
+
+            fichaSintomatologica.setSensacionAlzaTermica(pregunta1);
+            fichaSintomatologica.setTosEstornudo(pregunta2);
+            fichaSintomatologica.setExpectoracionFlema(pregunta3);
+            fichaSintomatologica.setContactoPositivo(pregunta4);
+            fichaSintomatologica.setIdPersonaRegistro(Principal.persona.getIdPersona());
+            
+            int idFicha = fichaSintomatologicaDAO.registrarFichaSintomatologica(fichaSintomatologica);
+            if (incorporacionDAO.registrarIncorporacion(idFicha, Principal.persona.getIdPersona())) {
+                JOptionPane.showMessageDialog(null, "Incorporación registrada", "Info", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            }
+
+        } catch (Exception ex) {
+
+        }
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
 

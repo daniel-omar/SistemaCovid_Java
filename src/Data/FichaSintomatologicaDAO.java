@@ -18,6 +18,7 @@ import Modelo.FichaSintomatologica;
 import Modelo.Incorporacion;
 import Modelo.Persona;
 import com.mysql.jdbc.Statement;
+import java.sql.Types;
 
 /**
  *
@@ -27,7 +28,7 @@ public class FichaSintomatologicaDAO {
 
     private Conexion conexion = null;
     private Connection cn = null;
-    
+
     public FichaSintomatologica obtenerIncorporacion(int idFicha) {
         FichaSintomatologica fichaSintomatologica = null;
         conexion = new Conexion();
@@ -41,7 +42,7 @@ public class FichaSintomatologicaDAO {
                 fichaSintomatologica = new FichaSintomatologica();
                 fichaSintomatologica.setIdFichaSintomatologica(rs.getInt("IdFichaSintomatologica"));
                 fichaSintomatologica.setIdFicha(rs.getInt("IdFicha"));
-                
+
                 fichaSintomatologica.setSensacionAlzaTermica(rs.getBoolean("SensacionAlzaTermica"));
                 fichaSintomatologica.setTosEstornudo(rs.getBoolean("TosEstornudo"));
                 fichaSintomatologica.setExpectoracionFlema(rs.getBoolean("ExpectoracionFlema"));
@@ -52,5 +53,30 @@ public class FichaSintomatologicaDAO {
             System.out.println(ex.getMessage());
         }
         return fichaSintomatologica;
+    }
+
+    public int registrarFichaSintomatologica(FichaSintomatologica fichaSintomatologica) {
+        int idFicha = 0;
+        conexion = new Conexion();
+        try {
+            cn = conexion.conectar();
+
+            CallableStatement sp = cn.prepareCall("call sp_registrarFichaSintomatologica(?,?,?,?,?,?)");
+            sp.setBoolean(1, fichaSintomatologica.getSensacionAlzaTermica());
+            sp.setBoolean(2, fichaSintomatologica.getTosEstornudo());
+            sp.setBoolean(3, fichaSintomatologica.getExpectoracionFlema());
+            sp.setBoolean(4, fichaSintomatologica.getContactoPositivo());
+            sp.setInt(5, fichaSintomatologica.getIdPersonaRegistro());
+            sp.registerOutParameter("v_idFicha", Types.INTEGER);
+            sp.execute();
+            ResultSet rs = sp.getResultSet();
+            rs.next();
+            idFicha = sp.getInt("v_idFicha");
+            
+            cn.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return idFicha;
     }
 }

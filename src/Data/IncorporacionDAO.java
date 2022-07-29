@@ -17,6 +17,7 @@ import Modelo.FichaSintomatologica;
 import Modelo.Incorporacion;
 import Modelo.Persona;
 import com.mysql.jdbc.Statement;
+import java.sql.Types;
 
 /**
  *
@@ -27,13 +28,13 @@ public class IncorporacionDAO {
     private Conexion conexion = null;
     private Connection cn = null;
 
-    public List<Incorporacion> ListarIncorporacion(int IdEstadoIncorporacion) {
+    public List<Incorporacion> ListarIncorporacionPorEstado(int IdEstadoIncorporacion) {
         List<Incorporacion> lstIncorporacion = new ArrayList<Incorporacion>();
         conexion = new Conexion();
         try {
 
             cn = conexion.conectar();
-            CallableStatement sp = cn.prepareCall("call sp_listarIncorporacion(?)");
+            CallableStatement sp = cn.prepareCall("call sp_listarIncorporacionPorEstado(?)");
             sp.setInt(1, IdEstadoIncorporacion);
             ResultSet rs = sp.executeQuery();
             while (rs.next()) {
@@ -121,5 +122,60 @@ public class IncorporacionDAO {
             System.out.println(ex.getMessage());
         }
         return rsp;
+    }
+    
+    public List<Incorporacion> ListarIncorporacionPorEmpleado(int IdEmpleado) {
+        List<Incorporacion> lstIncorporacion = new ArrayList<Incorporacion>();
+        conexion = new Conexion();
+        try {
+
+            cn = conexion.conectar();
+            CallableStatement sp = cn.prepareCall("call sp_listarIncorporacionPorPersona(?)");
+            sp.setInt(1, IdEmpleado);
+            ResultSet rs = sp.executeQuery();
+            while (rs.next()) {
+                Incorporacion incorporacion = new Incorporacion();
+                incorporacion.setIdIncorporacion(rs.getInt("IdIncorporacion"));
+                incorporacion.setIdEstadoIncorporacion(rs.getInt("IdEstadoIncorporacion"));
+                
+                EstadoIncorporacion oEstadoIncorporacion=new EstadoIncorporacion();
+                oEstadoIncorporacion.setIdEstadoIncorporacion(rs.getInt("IdEstadoIncorporacion"));
+                oEstadoIncorporacion.setNombre(rs.getString("NombreEstadoIncorporacion"));
+                incorporacion.setoEstadoIncorporacion(oEstadoIncorporacion);
+                
+                Persona oPersonaRegistro=new Persona();
+                oPersonaRegistro.setIdPersona(rs.getInt("IdPersonaRegistro"));
+                oPersonaRegistro.setNombres(rs.getString("NombresPersonaRegistro"));
+                oPersonaRegistro.setApellidoPaterno(rs.getString("ApellidoPaternoPersonaRegistro"));
+                oPersonaRegistro.setApellidoMaterno(rs.getString("ApellidoMaternoPersonaRegistro"));
+                incorporacion.setIdPersonaRegistro(rs.getInt("IdPersonaRegistro"));
+                incorporacion.setoPersonaRegistro(oPersonaRegistro);
+                
+                incorporacion.setFechaRegistro(rs.getDate("FechaRegistro"));
+                incorporacion.setFechaModificacion(rs.getDate("FechaModificacion"));
+                lstIncorporacion.add(incorporacion);
+            }
+            cn.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return lstIncorporacion;
+    }
+     public boolean registrarIncorporacion(int idFicha,int idPersonaRegistro) {
+        boolean respuesta = false;
+        conexion = new Conexion();
+        try {
+            cn = conexion.conectar();
+
+            CallableStatement sp = cn.prepareCall("call sp_registrarIncorporacion(?,?)");
+            sp.setInt(1, idFicha);
+            sp.setInt(2, idPersonaRegistro);
+            sp.executeQuery();
+            cn.close();
+            respuesta=true;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return respuesta;
     }
 }

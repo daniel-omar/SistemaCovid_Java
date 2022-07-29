@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import Modelo.Persona;
+import Modelo.TipoPersona;
 import com.mysql.jdbc.Statement;
 
 /**
@@ -191,13 +192,17 @@ public class PersonaDAO {
         try {
 
             cn = conexion.conectar();
-            PreparedStatement pt = cn.prepareStatement("select * from Persona where NumeroDocumento=? limit 1");
-            pt.setString(1, numeroDocumento);
-            ResultSet rs = pt.executeQuery();
+            CallableStatement sp = cn.prepareCall("call sp_obtenerPersona(?,?)");
+            sp.setInt(1, 0);
+            sp.setString(2, numeroDocumento);
+            ResultSet rs = sp.executeQuery();
             if (rs.next()) {
                 persona = new Persona();
                 persona.setIdPersona(rs.getInt("IdPersona"));
                 persona.setIdTipoPersona(rs.getInt("IdTipoPersona"));
+                TipoPersona tipoPersona=new TipoPersona();
+                tipoPersona.setNombre(rs.getString("NombreTipoPersona"));
+                persona.setoTipoPersona(tipoPersona);
                 persona.setNumeroDocumento(rs.getString("NumeroDocumento"));
                 persona.setNombres(rs.getString("Nombres"));
                 persona.setApellidoPaterno(rs.getString("ApellidoPaterno"));

@@ -42,6 +42,28 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="jLabel3" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="jLabel8" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblDescripcion" alignment="0" min="-2" pref="276" max="-2" attributes="0"/>
+                          <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel9" alignment="0" min="-2" pref="247" max="-2" attributes="0"/>
+                          <Component id="cbFichaSintomatologica" alignment="0" min="-2" pref="272" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+          </Group>
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
@@ -74,32 +96,10 @@
               </Group>
               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="jLabel3" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="jLabel8" alignment="0" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblDescripcion" alignment="0" min="-2" pref="276" max="-2" attributes="0"/>
-                          <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel9" alignment="0" min="-2" pref="247" max="-2" attributes="0"/>
-                          <Component id="cbFichaSintomatologica" alignment="0" min="-2" pref="272" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                  </Group>
-              </Group>
-          </Group>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
-              <Component id="btnRegistrar" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="109" max="-2" attributes="0"/>
+              <Component id="btnRegistrar" min="-2" pref="85" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="101" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -143,10 +143,10 @@
                   <Component id="rbPregunta4No" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="cbFichaSintomatologica" min="-2" max="-2" attributes="0"/>
+              <Component id="cbFichaSintomatologica" min="-2" pref="73" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="btnRegistrar" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="18" max="32767" attributes="0"/>
+              <Component id="btnRegistrar" pref="54" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -181,7 +181,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="66" green="66" red="0" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;Sensaci&#xf3;n de alza t&#xe9;rmica o fiebre mayor a 37.5&#xb0; &lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;1-Sensaci&#xf3;n de alza t&#xe9;rmica o fiebre mayor a 37.5&#xb0; &lt;/html&gt;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel6">
@@ -192,7 +192,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="66" green="66" red="0" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;Tos, estornudo o dificultad respiratorio&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;2-Tos, estornudo o dificultad respiratorio&lt;/html&gt;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
@@ -203,7 +203,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="66" green="66" red="0" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;Expectoraci&#xf3;n o flema amarilla&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;3-Expectoraci&#xf3;n o flema amarilla&lt;/html&gt;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel8">
@@ -222,7 +222,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="66" green="66" red="0" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;Contacto con persona(s) con un caso confirmado de COVID-19&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;4-Contacto con persona(s) con un caso confirmado de COVID-19&lt;/html&gt;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JRadioButton" name="rbPregunta1Si">

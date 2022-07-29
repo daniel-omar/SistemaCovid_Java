@@ -12,6 +12,11 @@ import Modelo.Persona;
 import Modelo.TipoPersona;
 import Util.Redimensionar;
 import static Vista.Principal.dsPrincipal;
+import java.awt.Font;
+import java.awt.Image;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
@@ -26,16 +31,34 @@ public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
     public FMantenedorIncorporacion() {
         initComponents();
 
-        OcultarPorTipo(false);
+        Ocultar(false);
         btnEstadoFicha.setText("Pendiente");
+        lblInfo.setText("<html>Se debe completar la ficha para poder registrar <br> su incorporación</html>");
+        lblInfo.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        this.setSize(300, 160);
     }
 
     public FMantenedorIncorporacion(int idIncorporacion) {
         initComponents();
 
         obtenerIncorporacion(idIncorporacion);
-        OcultarPorTipo(true);
         obtenerPersona(incorporacion.getIdPersonaRegistro());
+
+        Ocultar(false);
+        if (Principal.persona.getoTipoPersona().getNombre().equalsIgnoreCase("empleado")) {
+            btnVer.setVisible(true);
+            lblProceso.setVisible(true);
+            lblProceso.setText("<html>Su proceso de incoporación esta en estado: " + incorporacion.getoEstadoIncorporacion().getNombre() + "</html>");
+            return;
+        }
+        Ocultar(true);
+        if (incorporacion.getoEstadoIncorporacion().getNombre().equalsIgnoreCase("pendiente")) {
+            btnIncorporar.setEnabled(true);
+            btnNoIncorporar.setEnabled(true);
+        } else {
+            btnIncorporar.setEnabled(false);
+            btnNoIncorporar.setEnabled(false);
+        }
     }
 
     private void obtenerIncorporacion(int idIncorporacion) {
@@ -46,22 +69,27 @@ public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
     private void obtenerPersona(int idPersona) {
         persona = personaDAO.obtenerPersona(idPersona);
         lblInfo.setText(persona.getNombres() + " " + persona.getApellidoPaterno() + " " + persona.getApellidoMaterno());
+        lblInfo.setFont(new Font("Tahoma", Font.BOLD, 14));
     }
 
-    void OcultarPorTipo(boolean esVisible) {
+    void Ocultar(boolean esVisible) {
 
         btnVer.setVisible(esVisible);
         lblAccion.setVisible(esVisible);
         btnIncorporar.setVisible(esVisible);
         btnNoIncorporar.setVisible(esVisible);
 
-        if (incorporacion.getoEstadoIncorporacion().getNombre().equalsIgnoreCase("pendiente")) {
-            btnIncorporar.setEnabled(true);
-            btnNoIncorporar.setEnabled(true);
-        } else {
-            btnIncorporar.setEnabled(false);
-            btnNoIncorporar.setEnabled(false);
-        }
+    }
+
+    private void pintarLabel(JLabel lbl, String ruta) {
+        ImageIcon imagen = new ImageIcon(ruta);
+        Icon icono = new ImageIcon(
+                imagen.getImage().getScaledInstance(
+                        lbl.getWidth(), lbl.getHeight(), Image.SCALE_DEFAULT
+                )
+        );
+        lbl.setIcon(icono);
+        this.repaint();
     }
 
     @SuppressWarnings("unchecked")
@@ -79,19 +107,27 @@ public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
         btnVer = new javax.swing.JButton();
 
         setClosable(true);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblInfo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         lblInfo.setText("Persona");
+        getContentPane().add(lblInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, -1));
+
+        lblProceso.setBackground(new java.awt.Color(204, 255, 255));
+        getContentPane().add(lblProceso, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 290, 40));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         jLabel1.setText("<html><p><u>Ficha</u></p></html>");
         jLabel1.setToolTipText("");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel2.setText("Ficha Sintomatología");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
 
         lblAccion.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         lblAccion.setText("<html><p><u>Acciones</u></p></html>");
+        getContentPane().add(lblAccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, -1, -1));
 
         btnIncorporar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnIncorporar.setText("Incorporar");
@@ -100,6 +136,7 @@ public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
                 btnIncorporarActionPerformed(evt);
             }
         });
+        getContentPane().add(btnIncorporar, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 150, 114, 35));
 
         btnNoIncorporar.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btnNoIncorporar.setText("No incorporar");
@@ -108,9 +145,16 @@ public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
                 btnNoIncorporarActionPerformed(evt);
             }
         });
+        getContentPane().add(btnNoIncorporar, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 190, -1, 35));
 
         btnEstadoFicha.setBackground(new java.awt.Color(153, 255, 153));
         btnEstadoFicha.setText("Estado");
+        btnEstadoFicha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEstadoFichaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnEstadoFicha, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 90, 100, -1));
 
         btnVer.setText("Ver");
         btnVer.addActionListener(new java.awt.event.ActionListener() {
@@ -118,55 +162,7 @@ public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
                 btnVerActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblAccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(129, 129, 129)
-                        .addComponent(lblProceso, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lblInfo)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEstadoFicha, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnVer))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(86, 86, 86)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnIncorporar, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnNoIncorporar))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(53, 53, 53)
-                .addComponent(lblInfo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(btnEstadoFicha, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnVer))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblProceso, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblAccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(btnIncorporar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnNoIncorporar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38))
-        );
+        getContentPane().add(btnVer, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 90, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -178,6 +174,10 @@ public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
 
             if (resp) {
                 JOptionPane.showMessageDialog(null, "Incorporación registrada", "Info", JOptionPane.INFORMATION_MESSAGE);
+                FIncorporacion fIncorporacion = new FIncorporacion();
+                Principal.dsPrincipal.add(fIncorporacion);
+                Redimensionar.redimensionar(dsPrincipal, fIncorporacion);
+                fIncorporacion.show();
                 this.dispose();
             }
 
@@ -193,6 +193,10 @@ public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
 
             if (resp) {
                 JOptionPane.showMessageDialog(null, "No Incorporación registrada", "Info", JOptionPane.INFORMATION_MESSAGE);
+                FIncorporacion fIncorporacion = new FIncorporacion();
+                Principal.dsPrincipal.add(fIncorporacion);
+                Redimensionar.redimensionar(dsPrincipal, fIncorporacion);
+                fIncorporacion.show();
                 this.dispose();
             }
 
@@ -202,11 +206,22 @@ public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnNoIncorporarActionPerformed
 
     private void btnVerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerActionPerformed
-        FFichaSintomatologia fFichaSintomatologia = new FFichaSintomatologia(incorporacion.getIdIncorporacion());
+        FFichaSintomatologia fFichaSintomatologia = new FFichaSintomatologia(incorporacion.getIdFichaSintomatologica());
         Principal.dsPrincipal.add(fFichaSintomatologia);
         Redimensionar.redimensionar(dsPrincipal, fFichaSintomatologia);
         fFichaSintomatologia.show();
+        this.dispose();
     }//GEN-LAST:event_btnVerActionPerformed
+
+    private void btnEstadoFichaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstadoFichaActionPerformed
+        if (btnEstadoFicha.getText().equalsIgnoreCase("Pendiente")) {
+            FFichaSintomatologia fFichaSintomatologia = new FFichaSintomatologia();
+            Principal.dsPrincipal.add(fFichaSintomatologia);
+            Redimensionar.redimensionar(dsPrincipal, fFichaSintomatologia);
+            fFichaSintomatologia.show();
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnEstadoFichaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
