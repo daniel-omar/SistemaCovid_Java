@@ -8,8 +8,12 @@ package Vista;
 import Modelo.FichaSintomatologica;
 import Data.FichaSintomatologicaDAO;
 import Data.IncorporacionDAO;
+import Util.Redimensionar;
+import static Vista.Principal.dsPrincipal;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 
 /**
  *
@@ -23,12 +27,25 @@ public class FFichaSintomatologia extends javax.swing.JInternalFrame {
 
     public FFichaSintomatologia() {
         initComponents();
+        addCloseEvent();
         lblDescripcion.setText("<html>Los datos ingresados en esta ficha contituyen una declaración jurada de su parte</html>");
 
     }
 
+    void addCloseEvent() {
+        addInternalFrameListener(new InternalFrameAdapter() {
+            public void internalFrameClosing(InternalFrameEvent e) {
+                FIncorporacion fIncorporacion = new FIncorporacion();
+                dsPrincipal.add(fIncorporacion);
+                Redimensionar.redimensionar(dsPrincipal, fIncorporacion);
+                fIncorporacion.show();
+            }
+        });
+    }
+
     public FFichaSintomatologia(int idFicha) {
         initComponents();
+        addCloseEvent();
         lblDescripcion.setText("<html>Datos ingresados por el empleado</html>");
         btnRegistrar.setVisible(false);
         cbFichaSintomatologica.setVisible(false);
@@ -297,10 +314,15 @@ public class FFichaSintomatologia extends javax.swing.JInternalFrame {
             fichaSintomatologica.setExpectoracionFlema(pregunta3);
             fichaSintomatologica.setContactoPositivo(pregunta4);
             fichaSintomatologica.setIdPersonaRegistro(Principal.persona.getIdPersona());
-            
+
             int idFicha = fichaSintomatologicaDAO.registrarFichaSintomatologica(fichaSintomatologica);
             if (incorporacionDAO.registrarIncorporacion(idFicha, Principal.persona.getIdPersona())) {
                 JOptionPane.showMessageDialog(null, "Incorporación registrada", "Info", JOptionPane.INFORMATION_MESSAGE);
+
+                FIncorporacion fIncorporacion = new FIncorporacion();
+                dsPrincipal.add(fIncorporacion);
+                Redimensionar.redimensionar(dsPrincipal, fIncorporacion);
+                fIncorporacion.show();
                 this.dispose();
             }
 

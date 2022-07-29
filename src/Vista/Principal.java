@@ -30,10 +30,11 @@ public class Principal extends javax.swing.JFrame {
         this.persona = persona;
         initComponents();
 
-        mInfoUsuario.setText(persona.getoTipoPersona().getNombre() + " :: "
-                + persona.getNombres() + " "
+        mInfoUsuario.setText(
+                persona.getNombres() + " "
                 + persona.getApellidoPaterno() + " "
-                + persona.getApellidoMaterno());
+                + persona.getApellidoMaterno() + "::"
+                + persona.getoTipoPersona().getNombre());
 
         mBar.add(Box.createHorizontalGlue());
         mBar.add(mInfoUsuario);

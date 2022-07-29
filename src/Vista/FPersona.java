@@ -26,7 +26,7 @@ public class FPersona extends javax.swing.JInternalFrame {
     PersonaDAO personaDAO = new PersonaDAO();
 
     DefaultTableModel dtblPersona = null;
-    JButton btnAModificar = new JButton("Modificar");
+    JButton btnAModificar = new JButton("Editar");
     JButton btnADesactivar = new JButton("Desactivar");
     JButton btnAActivar = new JButton("Activar");
     JButton btnASeleccionar = new JButton("Seleccionar");

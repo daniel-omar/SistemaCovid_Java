@@ -18,6 +18,8 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 
 public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
 
@@ -30,7 +32,7 @@ public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
 
     public FMantenedorIncorporacion() {
         initComponents();
-
+        addCloseEvent();
         Ocultar(false);
         btnEstadoFicha.setText("Pendiente");
         lblInfo.setText("<html>Se debe completar la ficha para poder registrar <br> su incorporación</html>");
@@ -40,7 +42,7 @@ public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
 
     public FMantenedorIncorporacion(int idIncorporacion) {
         initComponents();
-
+        addCloseEvent();
         obtenerIncorporacion(idIncorporacion);
         obtenerPersona(incorporacion.getIdPersonaRegistro());
 
@@ -59,6 +61,17 @@ public class FMantenedorIncorporacion extends javax.swing.JInternalFrame {
             btnIncorporar.setEnabled(false);
             btnNoIncorporar.setEnabled(false);
         }
+    }
+
+    void addCloseEvent() {
+        addInternalFrameListener(new InternalFrameAdapter() {
+            public void internalFrameClosing(InternalFrameEvent e) {
+                FIncorporacion fIncorporacion = new FIncorporacion();
+                dsPrincipal.add(fIncorporacion);
+                Redimensionar.redimensionar(dsPrincipal, fIncorporacion);
+                fIncorporacion.show();
+            }
+        });
     }
 
     private void obtenerIncorporacion(int idIncorporacion) {
